@@ -5,10 +5,11 @@ from discord.ext import commands
 # ---- YOUR IDS ----
 GUILD_ID = 848119845144100924
 WELCOME_CHANNEL_ID = 907003823866929162
+MEMBER_ROLE_ID = 1081346773349584926
 
 # ---- BOT SETUP ----
 intents = discord.Intents.default()
-intents.members = True  # REQUIRED for member join events
+intents.members = True  # REQUIRED
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -17,11 +18,23 @@ async def on_ready():
     print(f"✅ Logged in as {bot.user}")
 
 @bot.event
-async def on_member_join(member):
-    # Make sure it’s your server
+async def on_member_join(member: discord.Member):
     if member.guild.id != GUILD_ID:
         return
 
+    # ---- Assign Role ----
+    role = member.guild.get_role(MEMBER_ROLE_ID)
+
+    if role:
+        try:
+            await member.add_roles(role, reason="Auto-assign Member role on join")
+            print(f"Added Member role to {member.name}")
+        except Exception as e:
+            print(f"Failed to add role: {e}")
+    else:
+        print("Member role not found!")
+
+    # ---- Send Welcome Message ----
     channel = bot.get_channel(WELCOME_CHANNEL_ID)
 
     if channel:
