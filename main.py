@@ -11,6 +11,7 @@ TOTAL_MEMBERS_CHANNEL_ID = 907013404546433054
 # ---- BOT SETUP ----
 intents = discord.Intents.default()
 intents.members = True  # REQUIRED
+intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
